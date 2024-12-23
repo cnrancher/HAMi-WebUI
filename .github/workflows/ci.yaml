@@ -2,13 +2,15 @@ name: Build and Push Images
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "release-1.0.3" ]
     tags:
+      - v[0-9]+.[0-9]+.[0-9]+-*
       - v[0-9]+.[0-9]+.[0-9]+.[0-9]+
       - v[0-9]+.[0-9]+.[0-9]+
       - v[0-9]+.[0-9]+
+
   pull_request:
-    branches: [ "main" ]
+    branches: [ "release-1.0.3" ]
 
 env:
   GO_VERSION: "1.22.5"
@@ -31,41 +33,41 @@ jobs:
       - name: Log in to DockerHub
         uses: docker/login-action@v3.1.0
         with:
-          username: ${{ secrets.DOCKERHUB_TOKEN }}
-          password: ${{ secrets.DOCKERHUB_PASSWD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: projecthami/hami-webui-fe-oss:${{ steps.branch-names.outputs.current_branch || steps.branch-names.outputs.tag }}
+          tags: cnrancher/hami-webui-fe-oss:${{ steps.branch-names.outputs.current_branch || steps.branch-names.outputs.tag }}
 
-  build-and-push-backend:
-    name: Build and Push Backend Image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # build-and-push-backend:
+  #   name: Build and Push Backend Image
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
 
-      - name: Get branch names.
-        id: branch-names
-        uses: tj-actions/branch-names@v8
+  #     - name: Get branch names.
+  #       id: branch-names
+  #       uses: tj-actions/branch-names@v8
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v1
 
-      - name: Log in to DockerHub
-        uses: docker/login-action@v3.1.0
-        with:
-          username: ${{ secrets.DOCKERHUB_TOKEN }}
-          password: ${{ secrets.DOCKERHUB_PASSWD }}
+  #     - name: Log in to DockerHub
+  #       uses: docker/login-action@v3.1.0
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_TOKEN }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWD }}
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: projecthami/hami-webui-be-oss:${{ steps.branch-names.outputs.current_branch || steps.branch-names.outputs.tag }}
+  #     - name: Build and push backend image
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: ./server
+  #         platforms: linux/amd64,linux/arm64
+  #         push: true
+  #         tags: projecthami/hami-webui-be-oss:${{ steps.branch-names.outputs.current_branch || steps.branch-names.outputs.tag }}
