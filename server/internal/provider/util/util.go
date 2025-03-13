@@ -3,10 +3,11 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/go-kratos/kratos/v2/log"
-	corev1 "k8s.io/api/core/v1"
 	"strconv"
 	"strings"
+
+	"github.com/go-kratos/kratos/v2/log"
+	corev1 "k8s.io/api/core/v1"
 )
 
 const (
@@ -60,7 +61,7 @@ func DecodeNodeDevices(str string, log *log.Helper) ([]*DeviceInfo, error) {
 	for _, val := range tmp {
 		if strings.Contains(val, ",") {
 			items := strings.Split(val, ",")
-			if len(items) == 7 {
+			if len(items) >= 7 { // hami v2.5.0 will contains more than 7 values
 				count, _ := strconv.Atoi(items[1])
 				devmem, _ := strconv.Atoi(items[2])
 				devcore, _ := strconv.Atoi(items[3])
