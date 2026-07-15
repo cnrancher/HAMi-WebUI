@@ -4,7 +4,7 @@ import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
 import i18n from '@/locales';
 
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: import.meta.env.VITE_APP_BASE_API || process.env.VUE_APP_BASE_API, // url = base url + request url
   timeout: 5000,
   validateStatus: function (status) {
     return (status >= 200 && status < 300) || status > 520;
